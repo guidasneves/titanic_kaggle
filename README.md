@@ -143,10 +143,10 @@ for linhas_train, linhas_cv in kf.split(X):
     yhat_train = model.predict(X_train)
     yhat_cv = model.predict(X_cv)
     
-    roc_train = roc_auc_score(yhat_train, y_train)
-    roc_cv = roc_auc_score(yhat_cv, y_cv)
+    acc_train = accuracy_score(yhat_train, y_train)
+    acc_cv = accuracy_score(yhat_cv, y_cv)
 
-    print(f'roc_train: {roc_train:.4f}, roc_cv: {roc_cv:.4f}\n')
+    print(f'acc_train: {acc_train:.4f}, acc_cv: {acc_cv:.4f}\n')
 
     step_train.append(roc_train)
     step_cv.append(roc_cv)
