@@ -2,10 +2,10 @@
 ## About
 The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on Kaggle is a competition in which the task is to predict the survival or the death of a given passenger based on a set of variables describing him such as his age, his sex, or his passenger class on the boat.
 
-## Table of contents
+## Table of Contents
 * [Titanic Kaggle Competition](#titanic_kaggle_competition)
   * [About](#about)
-  * [Table of contents](#table_of_contents)
+  * [Table of Contents](#table_of_contents)
   * [Data Preparation](#data_preparation)
   * [Hyperparameter Search](#hyperparameter_search)
   * [Model Evaluate](#model_evaluate)
@@ -107,7 +107,13 @@ opt.x
 ```
 
 ## Model Evaluate
-Training and evaluating the model, I will use `XGBoost` as an example. I am using `RepeatedKFold` to divide the data between training and validation.
+Training and evaluating the model. I am using `RepeatedKFold` to divide the data between training and validation.
+
+I will use `XGBoost` as an example, but I created and trained other models too.
+* [Logistic Regression](logistic_regression.ipynb)
+* [Neural Network](neural_network.ipynb)
+* [Random Forest](random_forest.ipynb)
+* [XGBoost](xgboost.ipynb)
 ```Python
 kf = RepeatedKFold(n_splits=3, n_repeats=1, random_state=42)
 
@@ -168,6 +174,32 @@ female.sort_values('Survived')
 ```
 
 ## Final Model
+Retraining the final model with all the data.
+```Python
+scaler = StandardScaler()
 
+X = scaler.fit_transform(X)
+X_test = scaler.transform(X_test)
+model = XGBClassifier(learning_rate=1e-3,
+                         n_estimators=opt.x[0],
+                         max_depth=opt.x[1],
+                         min_child_weight=opt.x[2],
+                         subsample=opt.x[3],
+                         num_parallel_tree=2,
+                         n_jobs=-1, 
+                         random_state=42)
+    
+model.fit(X, y)
+
+yhat = model.predict(X_test)
+yhat
+```
 
 ## Entry
+Creating the Set with the results of the predictions to import into kaggle.
+```Python
+result = pd.Series(yhat.reshape(-1), index=test['PassengerId'], name='Survived')
+result
+
+result.to_csv('./yhat/xgboost_model.csv', header=True)
+```
