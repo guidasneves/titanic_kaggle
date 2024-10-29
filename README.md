@@ -8,7 +8,7 @@ The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on
   * [Table of Contents](#table_of_contents)
   * [Data Preparation](#data_preparation)
   * [Hyperparameter Search](#hyperparameter_search)
-  * [Model Evaluate](#model_evaluate)
+  * [Model Evaluate](##model_evaluate)
     * [Logistic Regression](logistic_regression.ipynb)
     * [Neural Network](neural_network.ipynb)
     * [Random Forest](random_forest.ipynb)
