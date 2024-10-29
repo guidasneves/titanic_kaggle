@@ -3,18 +3,18 @@
 The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on Kaggle is a competition in which the task is to predict the survival or the death of a given passenger based on a set of variables describing him such as his age, his sex, or his passenger class on the boat.
 
 ## Table of Contents
-* [Titanic Kaggle Competition](#titanic_kaggle_competition)
+* [Titanic Kaggle Competition](#titanic-kaggle-competition)
   * [About](#about)
-  * [Table of Contents](#table_of_contents)
-  * [Data Preparation](#data_preparation)
-  * [Hyperparameter Search](#hyperparameter_search)
-  * [Model Evaluate](##model_evaluate)
+  * [Table of Contents](#table-of-contents)
+  * [Data Preparation](#data-preparation)
+  * [Hyperparameter Search](#hyperparameter-search)
+  * [Model Evaluate](#model-evaluate)
     * [Logistic Regression](logistic_regression.ipynb)
     * [Neural Network](neural_network.ipynb)
     * [Random Forest](random_forest.ipynb)
     * [XGBoost](xgboost.ipynb)
-  * [Error Analysis](#error_analysis)
-  * [Final Model](#final_model)
+  * [Error Analysis](#error-analysis)
+  * [Final Model](#final-model)
   * [Entry](#entry)
 
 ## Data Preparation
