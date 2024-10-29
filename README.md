@@ -7,6 +7,7 @@ The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on
   * [About](#about)
   * [Table of contents](#table_of_contents)
   * [Data Preparation](#data_preparation)
+  * [Hyperparameter Search](#hyperparameter_search)
   * [Model Evaluate](#model_evaluate)
     * [Logistic Regression](logistic_regression.ipynb)
     * [Neural Network](neural_network.ipynb)
@@ -51,3 +52,122 @@ train['Name_Sir'] = train['Name'].str.contains('Sir.').astype(int)
 train['Ticket_cat'] = train['Ticket'].map(lambda x: list(train['Ticket'].unique()).index(x) if x in list(train['Ticket'].unique()) else 0)
 train['Ticket_num'] = train['Ticket'].str.split().map(lambda x: x[1] if len(x) > 1 and x[1].isnumeric() else x[0] if x[0].isnumeric() else 0)
 ```
+
+Selecting only the feats that I will use in the model and also transforming null values ​​into 0.
+```Python
+variaveis = ['Sex_b', 'Age', 'Pclass', 'Embarked_S', 'Embarked_C', 'SibSp', 'Parch', 'Fare', 'Cabin_null',
+             'Cabin_C', 'Cabin_E', 'Cabin_G', 'Cabin_D', 'Cabin_A', 'Cabin_B', 'Cabin_F', 'Cabin_T',
+             'Name_Miss', 'Name_Mrs', 'Name_Master', 'Name_Col', 'Name_Major', 'Name_Mr', 'Name_Dr', 'Name_Don',
+             'Name_Sir', 'Ticket_num', 'Ticket_cat']
+             
+X = train[variaveis].fillna(0)
+X_test = test[variaveis].fillna(0)
+y = train['Survived']
+```
+
+## Hyperparameter Search
+Searching for the best hyperparameters using `Bayesian Optimization`.
+```Python
+def fit_model(hparams):
+    #learning_rate = hparams[4]
+    n_estimators = hparams[0]
+    max_depth = hparams[1]
+    min_child_weight = hparams[2]
+    subsample = hparams[3]
+    #colsample_bynode = hparams[4]
+    
+    model = XGBClassifier(n_estimators=n_estimators,
+                          max_depth=max_depth,
+                          min_child_weight=min_child_weight,
+                          subsample=subsample,
+                          #learning_rate=learning_rate,
+                          #colsample_bynode=colsample_bynode,
+                          num_parallel_tree=3,
+                          n_jobs=-1,
+                          random_state=42)
+    
+    model.fit(X_opt, y)
+    
+    yhat_train = model.predict(X_opt)
+    
+    return -roc_auc_score(yhat_train, y)
+
+space = [
+    (20, 500), # n_estimators
+    (10, 500), # max_depth
+    (1, 20), # min_child_weight
+    (0.05, 1.0), # subsample
+    #(0.5, 1.0), # colsample_bynode
+    #(1e-4, 1e-1, 'log-uniform'), # learning_rate
+]
+
+X_opt = StandardScaler().fit_transform(X)
+opt = gp_minimize(fit_model, space, random_state=42, verbose=0, n_calls=50, n_random_starts=20)
+opt.x
+```
+
+## Model Evaluate
+Training and evaluating the model, I will use `XGBoost` as an example. I am using `RepeatedKFold` to divide the data between training and validation.
+```Python
+kf = RepeatedKFold(n_splits=3, n_repeats=1, random_state=42)
+
+scaler = StandardScaler()
+
+step_train = []
+step_cv = []
+
+for linhas_train, linhas_cv in kf.split(X):
+    X_train, X_cv = X.iloc[linhas_train].copy(), X.iloc[linhas_cv].copy()
+    y_train, y_cv = y.iloc[linhas_train].copy(), y.iloc[linhas_cv].copy()
+
+    X_train = scaler.fit_transform(X_train)
+    X_cv = scaler.transform(X_cv)
+
+    model = XGBClassifier(learning_rate=1e-3,
+                         n_estimators=opt.x[0],
+                         max_depth=opt.x[1],
+                         min_child_weight=opt.x[2],
+                         subsample=opt.x[3],
+                         num_parallel_tree=2,
+                         n_jobs=-1, 
+                         random_state=42)
+    
+    model.fit(X_train, y_train)
+    
+    yhat_train = model.predict(X_train)
+    yhat_cv = model.predict(X_cv)
+    
+    roc_train = roc_auc_score(yhat_train, y_train)
+    roc_cv = roc_auc_score(yhat_cv, y_cv)
+
+    print(f'roc_train: {roc_train:.4f}, roc_cv: {roc_cv:.4f}\n')
+
+    step_train.append(roc_train)
+    step_cv.append(roc_cv)
+
+print(f'Train mean: {np.mean(step_train):.4f}, CV mean: {np.mean(step_cv)}')
+```
+
+## Error Analysis
+Performing error analysis on incorrect generalizations in the cv set. Analyzing errors by gender.
+```Python
+X_cv_erro = train.iloc[linhas_cv].copy()
+X_cv_erro['yhat'] = yhat_cv
+X_cv_erro.head()
+
+erro = X_cv_erro[X_cv_erro['Survived'] != X_cv_erro['yhat']]
+erro = erro[['Survived', 'yhat', 'Name', 'Cabin', 'Embarked', 'Sex', 'Sex_b', 'Age', 'Pclass', 'Embarked_S',
+             'Embarked_C', 'SibSp', 'Parch', 'Fare', 'Cabin_null',
+             'Cabin_C', 'Cabin_E', 'Cabin_G', 'Cabin_D', 'Cabin_A', 'Cabin_B', 'Cabin_F', 'Cabin_T',
+             'Name_Miss', 'Name_Mrs', 'Name_Master', 'Name_Col', 'Name_Major', 'Name_Mr', 'Name_Dr', 'Name_Don', 'Name_Sir']]
+
+female = erro[erro['Sex_b'] == 1]
+male = erro[erro['Sex_b'] == 0]
+
+female.sort_values('Survived')
+```
+
+## Final Model
+
+
+## Entry
