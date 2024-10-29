@@ -148,8 +148,8 @@ for linhas_train, linhas_cv in kf.split(X):
 
     print(f'acc_train: {acc_train:.4f}, acc_cv: {acc_cv:.4f}\n')
 
-    step_train.append(roc_train)
-    step_cv.append(roc_cv)
+    step_train.append(acc_train)
+    step_cv.append(acc_cv)
 
 print(f'Train mean: {np.mean(step_train):.4f}, CV mean: {np.mean(step_cv)}')
 ```
