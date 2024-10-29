@@ -15,3 +15,7 @@ The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on
   * [Error Analysis](#error_analysis)
   * [Final Model](#final_model)
   * [Entry](#entry)
+
+## Data Preparation
+```train['Sex_b'] = train['Sex'].map(lambda x: 1 if x == 'female' else 0)```
+```test['Sex_b'] = test['Sex'].map(lambda x: 1 if x == 'female' else 0)```
