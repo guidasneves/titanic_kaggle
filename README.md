@@ -69,20 +69,21 @@ y = train['Survived']
 Searching for the best hyperparameters using `Bayesian Optimization`.
 ```Python
 def fit_model(hparams):
-    #learning_rate = hparams[4]
     n_estimators = hparams[0]
     max_depth = hparams[1]
     min_child_weight = hparams[2]
     subsample = hparams[3]
-    #colsample_bynode = hparams[4]
+    learning_rate = hparams[4]
+    num_parallel_tree = hparams[5]
+    #colsample_bynode = hparams[6]
     
     model = XGBClassifier(n_estimators=n_estimators,
                           max_depth=max_depth,
                           min_child_weight=min_child_weight,
                           subsample=subsample,
-                          #learning_rate=learning_rate,
+                          learning_rate=learning_rate,
                           #colsample_bynode=colsample_bynode,
-                          num_parallel_tree=3,
+                          num_parallel_tree=num_parallel_tree,
                           n_jobs=-1,
                           random_state=42)
     
@@ -90,15 +91,16 @@ def fit_model(hparams):
     
     yhat_train = model.predict(X_opt)
     
-    return -roc_auc_score(yhat_train, y)
+    return -accuracy_score(yhat_train, y)
 
 space = [
-    (20, 500), # n_estimators
-    (10, 500), # max_depth
-    (1, 20), # min_child_weight
-    (0.05, 1.0), # subsample
+    (100, 800), # n_estimators
+    (10, 400), # max_depth
+    (1, 50), # min_child_weight
+    (0.07, 1.0), # subsample
+    (1e-5, 1e-1, 'log-uniform'), # learning_rate
+    (2, 50), # num_parallel_tree
     #(0.5, 1.0), # colsample_bynode
-    #(1e-4, 1e-1, 'log-uniform'), # learning_rate
 ]
 
 X_opt = StandardScaler().fit_transform(X)
@@ -129,12 +131,12 @@ for linhas_train, linhas_cv in kf.split(X):
     X_train = scaler.fit_transform(X_train)
     X_cv = scaler.transform(X_cv)
 
-    model = XGBClassifier(learning_rate=1e-3,
+    model = XGBClassifier(learning_rate=opt.x[4],
                          n_estimators=opt.x[0],
                          max_depth=opt.x[1],
                          min_child_weight=opt.x[2],
                          subsample=opt.x[3],
-                         num_parallel_tree=2,
+                         num_parallel_tree=opt.x[5],
                          n_jobs=-1, 
                          random_state=42)
     
@@ -142,16 +144,17 @@ for linhas_train, linhas_cv in kf.split(X):
     
     yhat_train = model.predict(X_train)
     yhat_cv = model.predict(X_cv)
-    
+
     acc_train = accuracy_score(yhat_train, y_train)
     acc_cv = accuracy_score(yhat_cv, y_cv)
 
     print(f'acc_train: {acc_train:.4f}, acc_cv: {acc_cv:.4f}\n')
 
+
     step_train.append(acc_train)
     step_cv.append(acc_cv)
 
-print(f'Train mean: {np.mean(step_train):.4f}, CV mean: {np.mean(step_cv)}')
+print(f'Train mean: {np.mean(step_train):.2f}, CV mean: {np.mean(step_cv):.2f}')
 ```
 
 ## Error Analysis
