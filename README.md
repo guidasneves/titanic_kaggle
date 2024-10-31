@@ -191,12 +191,12 @@ scaler = StandardScaler()
 
 X = scaler.fit_transform(X)
 X_test = scaler.transform(X_test)
-model = XGBClassifier(learning_rate=1e-3,
+model = XGBClassifier(learning_rate=opt.x[4],
                          n_estimators=opt.x[0],
                          max_depth=opt.x[1],
                          min_child_weight=opt.x[2],
                          subsample=opt.x[3],
-                         num_parallel_tree=2,
+                         num_parallel_tree=opt.x[5],
                          n_jobs=-1, 
                          random_state=42)
     
