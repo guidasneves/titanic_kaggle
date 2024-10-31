@@ -212,5 +212,5 @@ Creating the Set with the results of the predictions to import into kaggle.
 result = pd.Series(yhat.reshape(-1), index=test['PassengerId'], name='Survived')
 result
 
-result.to_csv('./yhat/xgboost_model.csv', header=True)
+result.to_csv('../yhat/xgboost_model.csv', header=True)
 ```
