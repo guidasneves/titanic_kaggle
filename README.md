@@ -6,6 +6,7 @@ The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on
 * [Titanic Kaggle Competition](#titanic-kaggle-competition)
   * [About](#about)
   * [Table of Contents](#table-of-contents)
+  * [Installation](#Installation)
   * [Data Preparation](#data-preparation)
   * [Hyperparameter Search](#hyperparameter-search)
   * [Model Evaluate](#model-evaluate)
