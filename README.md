@@ -22,7 +22,7 @@ The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on
 Cloning the repository and downloading the libraries used in the models
 ```Console
 git clone https://github.com/guidasneves/titanic_kaggle.git
-pip install requirements
+pip install -r requirements.txt
 ```
 
 ## Data Preparation
