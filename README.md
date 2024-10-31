@@ -17,6 +17,13 @@ The [Titanic challenge](https://www.kaggle.com/competitions/titanic/overview) on
   * [Final Model](#final-model)
   * [Entry](#entry)
 
+## Installation
+Cloning the repository and downloading the libraries used in the models
+```Console
+git clone https://github.com/guidasneves/titanic_kaggle.git
+pip install requirements
+```
+
 ## Data Preparation
 Transforming the categorical sex feature into a binary feature.
 ```Python
