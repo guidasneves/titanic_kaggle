@@ -120,10 +120,10 @@ opt.x
 Training and evaluating the model. I am using `RepeatedKFold` to divide the data between training and validation.
 
 I will use `XGBoost` as an example, but I created and trained other models too.
-* [Logistic Regression](logistic_regression.ipynb)
-* [Neural Network](neural_network.ipynb)
-* [Random Forest](random_forest.ipynb)
-* [XGBoost](xgboost.ipynb)
+* [Logistic Regression](models/logistic_regression.ipynb)
+* [Neural Network](models/neural_network.ipynb)
+* [Random Forest](models/random_forest.ipynb)
+* [XGBoost](models/xgboost.ipynb)
 ```Python
 kf = RepeatedKFold(n_splits=3, n_repeats=1, random_state=42)
 
