@@ -68,9 +68,9 @@ variaveis = ['Sex_b', 'Age', 'Pclass', 'Embarked_S', 'Embarked_C', 'SibSp', 'Par
              'Name_Miss', 'Name_Mrs', 'Name_Master', 'Name_Col', 'Name_Major', 'Name_Mr', 'Name_Dr', 'Name_Don',
              'Name_Sir', 'Ticket_num', 'Ticket_cat']
              
-X = train[variaveis].fillna(0)
-X_test = test[variaveis].fillna(0)
-y = train['Survived']
+X = train[variaveis].fillna(0).copy()
+X_test = test[variaveis].fillna(0).copy()
+y = train['Survived'].copy()
 ```
 
 ## Hyperparameter Search
